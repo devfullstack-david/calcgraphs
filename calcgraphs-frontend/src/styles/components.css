@@ -1,0 +1,73 @@
+.navbar-container {
+    background-color: #252525;
+    color: white;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-logo {
+    font-size: 26px;
+    margin-left: 10px;
+}
+
+.navbar-menu {
+    width: 50%;
+}
+
+.navbar-menu ul {
+    display: flex;
+    list-style-type: none;
+    gap: 25px;
+    justify-content: end;
+    margin-right: 10px;
+    align-items: center;
+}
+
+.navbar-menu ul li {
+    cursor: pointer;
+}
+
+.navbar-menu ul li a {
+    text-decoration: none;
+    color: white;
+}
+
+.navbar-menu ul li:hover {
+    border-bottom: 1px solid white;
+}
+
+.graph-map__container {
+    width: 95%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.graph-map__map {
+    width: 80%;
+    border-radius: 10px;
+    height: 60vh;
+    border: 1px black solid;
+}
+
+.graph-map__algorithm-log {
+    width: 15%;
+    height: 60vh;
+    border-radius: 10px;
+    border: 1px black solid;
+}
+
+.graph-map__title {
+    background-color: #E9E8E8;
+    width: 100%;
+    border-radius: 10px 10px 0px 0px;
+    padding-top: 5px;
+    text-align: center;
+}
+
+#graphMap {
+    width: 100%;
+}

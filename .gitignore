@@ -1,0 +1,3 @@
+/calcgraphs-backend/*.env
+/calcgraphs-backend/node_modules
+/calcgraphs-frontend/package-lock.json
