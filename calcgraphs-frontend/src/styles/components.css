@@ -49,13 +49,13 @@
 .graph-map__map {
     width: 80%;
     border-radius: 10px;
-    height: 60vh;
+    height: 80vh;
     border: 1px black solid;
 }
 
 .graph-map__algorithm-log {
     width: 15%;
-    height: 60vh;
+    height: 80vh;
     border-radius: 10px;
     border: 1px black solid;
 }

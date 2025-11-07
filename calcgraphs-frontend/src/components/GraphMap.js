@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import '@/styles/components.css';
-import { vertices, edges } from '@/config/graph'; 
+import { getEdges, getVertices } from '@/services/neighborhood';
 
 const VERTEX_RADIUS = 10;
 
@@ -20,8 +20,10 @@ const GraphMap = () => {
 
         const ctx = canvas.getContext('2d');
 
-        const drawGraph = () => {
+        const drawGraph = async () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const vertices = await getVertices();
+            const edges = await getEdges();
 
             edges.forEach(edge => {
                 const startPos = vertices[edge.start];
@@ -30,11 +32,11 @@ const GraphMap = () => {
                 ctx.beginPath();
                 ctx.moveTo(startPos.x, startPos.y);
                 ctx.lineTo(endPos.x, endPos.y);
-                ctx.strokeStyle = '#000';
+                ctx.strokeStyle = '#858585ff';
                 ctx.lineWidth = 2;
                 ctx.stroke();
             });
-
+            
             for (const label in vertices) {
                 const pos = vertices[label];
                 
@@ -92,7 +94,6 @@ const GraphMap = () => {
             }
         }
     };
-
 
     return (
         <div className='graph-map__container'>
