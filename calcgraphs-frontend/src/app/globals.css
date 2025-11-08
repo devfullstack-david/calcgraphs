@@ -8,3 +8,14 @@ body {
   padding: 0;
   margin: 0;
 }
+
+.gray-line {
+  background-color: #c2c2c2;
+  margin: 0;
+  padding: 5px;
+}
+
+.white-line {
+  margin: 0;
+  padding: 5px;
+}

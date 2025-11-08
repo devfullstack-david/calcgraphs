@@ -2,14 +2,44 @@
 
 import "@/styles/pages.css"
 import Select from '@/components/Select'
-import { useState } from "react";
+import { useRef, useState } from "react";
 import GraphMap from "@/components/GraphMap";
+import { generatePath } from "@/services/neighborhood";
 
 export default function Home() {
-  const [algorithm, setAlgorithm] = useState("");
-  const [transport, setTransport] = useState("");
+  const [algorithm, setAlgorithm] = useState(null);
+  const [transport, setTransport] = useState(null);
+  const [startNode, setStartNode] = useState(null);
+  const graphMapRef = useRef();
+  const [endNode, setEndNode] = useState(null);
 
-  const handleGenerate = () => {};
+  const handleGenerate = async () => {
+    try {
+      const pathResponse = await generatePath();
+      console.log(pathResponse);
+    } catch (error) {
+      alert('Ocorreu um erro ao gerar o caminho');
+    }
+  };
+
+  const clearData = () => {
+    setAlgorithm(null);
+    setTransport(null);
+    setStartNode(null);
+    setEndNode(null);
+
+    if (graphMapRef.current && graphMapRef.current.clearData) {
+      graphMapRef.current.clearData();
+    }
+  };
+
+  const updateStartNode = (value) => {
+    setStartNode(value);
+  };
+
+  const updateEndNote = (value) => {
+    setEndNode(value);
+  };
 
   const algorithms = [
     {
@@ -23,7 +53,15 @@ export default function Home() {
     {
       value: 'bellmanFord',
       label: 'Bellman-Ford'
-    }
+    },
+    {
+      value: 'bfs',
+      label: 'BFS'
+    },
+    {
+      value: 'floydWarshall',
+      label: 'Floyd-Warshall'
+    },
   ];
 
   const transports = [
@@ -59,17 +97,36 @@ export default function Home() {
           para executar o cálculo da rota
         </p>
       </center>
+
+      <button  
+        className='clear-data__button' 
+        onClick={clearData}
+      >
+        Limpar seleção
+      </button>
       
       <div className="main-page__select-container">
         <Select items={algorithms} placeholder="Selecione o algoritmo desejado" onSelectChange={setAlgorithm} />
         <Select items={transports} placeholder="Selecione seu meio de transporte" onSelectChange={setTransport} />
       </div>
 
-      <button className="main-page__button" onClick={handleGenerate}>
+      <GraphMap 
+        updateStartNode={updateStartNode} 
+        updateEndNote={updateEndNote} 
+        algorithm={algorithm}
+        transport={transport}
+        ref={graphMapRef}
+      />
+
+      <br />
+
+      <button 
+        disabled={!algorithm || !transport || !endNode || !startNode} 
+        className={!algorithm || !transport || !endNode || !startNode ? 'disabled-button' : 'main-page__button'} 
+        onClick={handleGenerate}
+      >
         Gerar a rota
       </button>
-
-      <GraphMap />
     </div>
   );
 }

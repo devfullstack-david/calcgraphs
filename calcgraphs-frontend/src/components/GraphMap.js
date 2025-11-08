@@ -1,17 +1,38 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import '@/styles/components.css';
 import { getEdges, getVertices } from '@/services/neighborhood';
 
 const VERTEX_RADIUS = 10;
 
-const GraphMap = () => {
+const GraphMap = forwardRef((props, ref) => {
     const canvasRef = useRef(null);
     const [startNode, setStartNode] = useState(null);
     const [endNode, setEndNode] = useState(null);
+    const [vertices, setVertices] = useState({});
+    const [edges, setEdges] = useState([]);
+
+    const clearData = () => {
+        setStartNode(null);
+        setEndNode(null);
+    };
+
+    useImperativeHandle(ref, () => ({
+        clearData,
+    }))
+
+    useEffect(() => {
+        const loadData = async () => {
+            const v = await getVertices();
+            const e = await getEdges();
+            setVertices(v);
+            setEdges(e);
+        };
+        loadData();
+    }, [props.startNode, props.endNode]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
-        if (!canvas) return;
+        if (!canvas || Object.keys(vertices).length === 0) return;
 
         const rect = canvas.parentNode.getBoundingClientRect();
 
@@ -29,12 +50,32 @@ const GraphMap = () => {
                 const startPos = vertices[edge.start];
                 const endPos = vertices[edge.end];
 
+                if (!startPos || !endPos) return;
+
                 ctx.beginPath();
                 ctx.moveTo(startPos.x, startPos.y);
                 ctx.lineTo(endPos.x, endPos.y);
                 ctx.strokeStyle = '#858585ff';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 1;
                 ctx.stroke();
+
+                const midX = (startPos.x + endPos.x) / 2;
+                const midY = (startPos.y + endPos.y) / 2;
+
+                const text = `${edge.distance}km`;
+
+                ctx.fillStyle = 'black';
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+
+                let textMetrics = ctx.measureText(text);
+                let textWidth = textMetrics.width;
+                let textHeight = 12;
+
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.fillRect(midX - textWidth / 2 - 2, midY - textHeight / 2 - 2, textWidth + 4, textHeight + 4);
+                ctx.fillStyle = 'black';
+                ctx.fillText(text, midX, midY + 4);
             });
             
             for (const label in vertices) {
@@ -54,13 +95,13 @@ const GraphMap = () => {
                 
                 ctx.fillStyle = 'black';
                 ctx.font = '12px Arial';
-                ctx.fillText(label, pos.x + 15, pos.y + 5);
+                ctx.fillText(label, pos.x, pos.y - 15);
             }
         };
 
         drawGraph();
 
-    }, [startNode, endNode]); 
+    }, [vertices, edges, startNode, endNode]); 
 
 
     const findClickedVertex = (x, y) => {
@@ -87,9 +128,11 @@ const GraphMap = () => {
         if (clickedVertex) {
             if (!startNode) {
                 setStartNode(clickedVertex);
+                props.updateStartNode(startNode);
                 console.log('Início:', clickedVertex);
             } else if (!endNode || clickedVertex !== startNode) {
                 setEndNode(clickedVertex);
+                props.updateEndNote(endNode);
                 console.log('Fim:', clickedVertex);
             }
         }
@@ -114,9 +157,23 @@ const GraphMap = () => {
                 <div className='graph-map__title'>
                     Logs do algoritmo
                 </div>
+                <div className='log-properties'>
+                    <p className='gray-line'> 
+                        ponto inicial: {startNode}
+                    </p>
+                    <p className='white-line'>
+                        ponto final: {endNode}
+                    </p>
+                    <p className='gray-line'>
+                        algoritmo: {props.algorithm}
+                    </p>
+                    <p className='white-line'>
+                        transporte: {props.transport}
+                    </p>
+                </div>
             </div>
         </div>
     );
-};
+});
 
 export default GraphMap;
