@@ -10,13 +10,14 @@ export default function Home() {
   const [algorithm, setAlgorithm] = useState(null);
   const [transport, setTransport] = useState(null);
   const [startNode, setStartNode] = useState(null);
+  const [path, setPath] = useState(null);
   const graphMapRef = useRef();
   const [endNode, setEndNode] = useState(null);
 
   const handleGenerate = async () => {
     try {
       const pathResponse = await generatePath(startNode, endNode, algorithm, transport);
-      console.log(pathResponse);
+      setPath(pathResponse);
     } catch (error) {
       alert('Ocorreu um erro ao gerar o caminho');
     }
@@ -34,8 +35,6 @@ export default function Home() {
   };
 
   const updateStartNode = (value) => {
-    console.log('updateStartNode ', value);
-    
     setStartNode(value);
   };
 
@@ -121,6 +120,7 @@ export default function Home() {
         updateEndNote={updateEndNote} 
         algorithm={algorithm}
         transport={transport}
+        path={path}
         ref={graphMapRef}
       />
 

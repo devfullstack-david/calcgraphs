@@ -71,3 +71,11 @@
 #graphMap {
     width: 100%;
 }
+
+.log-box {
+    background-color: #c2c2c2;
+    color: black;
+    font-size: 12px;
+    margin: 0;
+    padding: 5px;
+}

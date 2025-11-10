@@ -28,7 +28,7 @@ const GraphMap = forwardRef((props, ref) => {
             setEdges(e);
         };
         loadData();
-    }, [props.startNode, props.endNode]);
+    }, [props.startNode, props.endNode, props.path]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -41,10 +41,24 @@ const GraphMap = forwardRef((props, ref) => {
 
         const ctx = canvas.getContext('2d');
 
+        const isPathEdge = (edge) => {
+            if (!props.path || props.path.length === 0) return false;
+
+            return props.path.some(pathEdge => {
+                const start = edge.start;
+                const end = edge.end;
+                const pathStart = pathEdge.fromNode;
+                const pathEnd = pathEdge.toNode;
+                
+                const match1 = start === pathStart && end === pathEnd;
+                const match2 = start === pathEnd && end === pathStart; 
+                
+                return match1 || match2;
+            });
+        };
+
         const drawGraph = async () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const vertices = await getVertices();
-            const edges = await getEdges();
 
             edges.forEach(edge => {
                 const startPos = vertices[edge.start];
@@ -52,11 +66,19 @@ const GraphMap = forwardRef((props, ref) => {
 
                 if (!startPos || !endPos) return;
 
+                let lineColor = '#858585ff';
+                let lineWidth = 1;
+
+                if (isPathEdge(edge)) {
+                    lineColor = 'red'; 
+                    lineWidth = 3;
+                }
+
                 ctx.beginPath();
                 ctx.moveTo(startPos.x, startPos.y);
                 ctx.lineTo(endPos.x, endPos.y);
-                ctx.strokeStyle = '#858585ff';
-                ctx.lineWidth = 1;
+                ctx.strokeStyle = lineColor;
+                ctx.lineWidth = lineWidth;
                 ctx.stroke();
 
                 const midX = (startPos.x + endPos.x) / 2;
@@ -101,7 +123,7 @@ const GraphMap = forwardRef((props, ref) => {
 
         drawGraph();
 
-    }, [vertices, edges, startNode, endNode]); 
+    }, [vertices, edges, startNode, endNode, props.path]); 
 
 
     const findClickedVertex = (x, y) => {
@@ -168,6 +190,17 @@ const GraphMap = forwardRef((props, ref) => {
                     <p className='white-line'>
                         transporte: {props.transport}
                     </p>
+                </div>
+                <br />
+                <div className='log-box'>
+                    { props.path?.map((p, index) => (
+                            <div key={index}>
+                                { p.logInformation }
+                                <br />
+                                <br />
+                            </div>
+                        )) 
+                    }
                 </div>
             </div>
         </div>
