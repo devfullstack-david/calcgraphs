@@ -18,7 +18,15 @@ export async function getEdges() {
     return response.data.items;
 }
 
-export async function generatePath() {
-    const response = await api.get('/generate/path');
+export async function generatePath(start, final, algorithm, transport) {
+    const response = await api.get('/calculate/path', {
+        params: {
+            start, 
+            final,
+            algorithm,
+            transport
+        }
+    });
+    
     return response.data.items;
 };

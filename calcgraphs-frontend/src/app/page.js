@@ -15,7 +15,7 @@ export default function Home() {
 
   const handleGenerate = async () => {
     try {
-      const pathResponse = await generatePath();
+      const pathResponse = await generatePath(startNode, endNode, algorithm, transport);
       console.log(pathResponse);
     } catch (error) {
       alert('Ocorreu um erro ao gerar o caminho');
@@ -34,6 +34,8 @@ export default function Home() {
   };
 
   const updateStartNode = (value) => {
+    console.log('updateStartNode ', value);
+    
     setStartNode(value);
   };
 
@@ -74,12 +76,16 @@ export default function Home() {
       label: 'Ônibus'
     },
     {
-      value: 'walk',
-      label: 'Caminhando'
+      value: 'truck',
+      label: 'Caminhão'
     },
     {
       value: 'motocycle',
       label: 'Motocicleta'
+    },
+    {
+      value: 'bike',
+      label: 'Bicicleta'
     },
   ];
 
@@ -121,8 +127,7 @@ export default function Home() {
       <br />
 
       <button 
-        disabled={!algorithm || !transport || !endNode || !startNode} 
-        className={!algorithm || !transport || !endNode || !startNode ? 'disabled-button' : 'main-page__button'} 
+        className={'main-page__button'} 
         onClick={handleGenerate}
       >
         Gerar a rota

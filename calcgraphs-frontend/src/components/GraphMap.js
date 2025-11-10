@@ -128,12 +128,10 @@ const GraphMap = forwardRef((props, ref) => {
         if (clickedVertex) {
             if (!startNode) {
                 setStartNode(clickedVertex);
-                props.updateStartNode(startNode);
-                console.log('Início:', clickedVertex);
+                props.updateStartNode(clickedVertex);
             } else if (!endNode || clickedVertex !== startNode) {
                 setEndNode(clickedVertex);
-                props.updateEndNote(endNode);
-                console.log('Fim:', clickedVertex);
+                props.updateEndNote(clickedVertex);
             }
         }
     };
