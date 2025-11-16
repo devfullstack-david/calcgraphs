@@ -187,9 +187,6 @@ const GraphMap = forwardRef((props, ref) => {
                     <p className='gray-line'>
                         algoritmo: {props.algorithm}
                     </p>
-                    <p className='white-line'>
-                        transporte: {props.transport}
-                    </p>
                 </div>
                 <br />
                 <div className='log-box'>

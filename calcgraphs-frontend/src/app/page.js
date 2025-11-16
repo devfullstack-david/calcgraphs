@@ -8,7 +8,6 @@ import { generatePath } from "@/services/neighborhood";
 
 export default function Home() {
   const [algorithm, setAlgorithm] = useState(null);
-  const [transport, setTransport] = useState(null);
   const [startNode, setStartNode] = useState(null);
   const [path, setPath] = useState(null);
   const graphMapRef = useRef();
@@ -16,7 +15,7 @@ export default function Home() {
 
   const handleGenerate = async () => {
     try {
-      const pathResponse = await generatePath(startNode, endNode, algorithm, transport);
+      const pathResponse = await generatePath(startNode, endNode, algorithm);
       setPath(pathResponse);
     } catch (error) {
       alert('Ocorreu um erro ao gerar o caminho');
@@ -25,7 +24,6 @@ export default function Home() {
 
   const clearData = () => {
     setAlgorithm(null);
-    setTransport(null);
     setStartNode(null);
     setEndNode(null);
 
@@ -65,29 +63,6 @@ export default function Home() {
     },
   ];
 
-  const transports = [
-    {
-      value: 'car',
-      label: 'Carro'
-    },
-    {
-      value: 'bus',
-      label: 'Ônibus'
-    },
-    {
-      value: 'truck',
-      label: 'Caminhão'
-    },
-    {
-      value: 'motocycle',
-      label: 'Motocicleta'
-    },
-    {
-      value: 'bike',
-      label: 'Bicicleta'
-    },
-  ];
-
   return (
     <div className="main-page__container">
       <h2>Selecione as opções abaixo</h2>
@@ -112,14 +87,12 @@ export default function Home() {
       
       <div className="main-page__select-container">
         <Select items={algorithms} placeholder="Selecione o algoritmo desejado" onSelectChange={setAlgorithm} />
-        <Select items={transports} placeholder="Selecione seu meio de transporte" onSelectChange={setTransport} />
       </div>
 
       <GraphMap 
         updateStartNode={updateStartNode} 
         updateEndNote={updateEndNote} 
         algorithm={algorithm}
-        transport={transport}
         path={path}
         ref={graphMapRef}
       />

@@ -2,63 +2,89 @@ import { ResultPath } from "../../../domain/interfaces/astar";
 import { Coordinate } from "../../../domain/interfaces/neighborhood";
 import { NeighborhoodRepository } from "../../repositories/neighborhood";
 
-function calculateH(fromNodeCoordinate: Coordinate, finalNodeCoordinate: Coordinate, cost: number): number {
-    const xHeuristic = Math.pow((fromNodeCoordinate.x - finalNodeCoordinate.x), 2);
-    const yHeuristic = Math.pow((fromNodeCoordinate.y - finalNodeCoordinate.y), 2);
-    const dpx = Math.sqrt(xHeuristic + yHeuristic);
-    const vAvg = dpx / cost;
+type NodeInfo = {
+    name: string;
+    g: number;
+    h: number;
+    f: number;
+    beforeNode: string | null;
+}
 
-    return dpx / vAvg;
+// Considerando 1px = 0.02km
+function calculateH(a: Coordinate, b: Coordinate): number {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return Math.sqrt(dx*dx + dy*dy) * 0.02;
 };
 
-export async function astar(start: string, final: string, maxSpeed: number): Promise<ResultPath[]> {
+export async function astar(start: string, final: string): Promise<ResultPath[]> {
     const repository = new NeighborhoodRepository();
-    const finalNodeCoordinate = await repository.getCoordinate(final);
-    
-    let fromNode = start;
-    const path: ResultPath[] = [];
 
-    let i = 0;
+    const startCoordinateInformation = await repository.getCoordinate(start);
+    const finalCoordinateInformation = await repository.getCoordinate(final);
 
-    while (fromNode != final) {
-        if (i === 10) break;
-       
-        const neighbors = await repository.getNeighbors(fromNode, maxSpeed);
+    const openList: NodeInfo[] = [];
+    const closedList: NodeInfo[] = [];
+
+    const hStart = calculateH(startCoordinateInformation, finalCoordinateInformation)
+
+    openList.push({
+        name: start,
+        g: 0,
+        h: hStart,
+        f: hStart,
+        beforeNode: null
+    });
+
+    while (openList.length > 0) {
+        let current = openList[0];
+
+        for (const node of openList) {
+            if (node.f < current.f) current = node;
+        }
+
+        if (current.name === final) {
+            reconstructPath(current, closedList);
+            break;
+        }
+
+        openList.splice(openList.indexOf(current), 1);
+        closedList.push(current);
         
-        const shortNeighbor: ResultPath = {
-            fn: 100000000000000000,
-            fromNode: '',
-            toNode: '',
-            weight: 0,
-            logInformation: ''
-        };
+        const neighbors = await repository.getNeighbors(current.name);
 
         for (const n of neighbors) {
-            const fromNodeCoordinate = await repository.getCoordinate(fromNode === n.toNode ? n.toNode : fromNode);
-            const toNodeCoordinate = await repository.getCoordinate(fromNode === n.toNode ? n.fromNode : n.toNode);
-            const heuristic = calculateH(fromNodeCoordinate, finalNodeCoordinate, n.weight);
-            const fn = n.weight + heuristic;
+            const neighborName = n.toNode;
 
-            if (fn < shortNeighbor.fn) {
-                const informations = await repository.getPathInformation(
-                    n.fromNode,
-                    n.toNode
-                );
-                shortNeighbor.fromNode = fromNodeCoordinate.node;
-                shortNeighbor.toNode = toNodeCoordinate.node;
-                shortNeighbor.fn = fn;
-                shortNeighbor.weight = n.weight;
-                shortNeighbor.logInformation = `A via de ${shortNeighbor.fromNode} até ${shortNeighbor.toNode} leva ${n.weight} minutos. A via apresenta velocidade máxima de ${informations.maxSpeed}km/h, Intensidade do tráfego em ${informations.traffic} e a distância de ${informations.distance}km`;
+            const closed = closedList.find(nd => nd.name === neighborName);
+            if (closed) continue;
+
+            const coord = await repository.getCoordinate(neighborName);
+            const tentativeG = current.g + n.weight;
+            
+            let neighborNode = openList.find(nd => nd.name === neighborName);
+
+            if (!neighborNode) {
+                const h = calculateH(coord, finalCoordinateInformation);
+                neighborNode = {
+                    name: neighborName,
+                    g: tentativeG,
+                    h,
+                    f: tentativeG + h,
+                    beforeNode: current.name
+                };
+                openList.push(neighborNode);
+            } else if (tentativeG < neighborNode.g) {
+                neighborNode.g = tentativeG;
+                neighborNode.f = tentativeG + neighborNode.h;
+                neighborNode.beforeNode = current.name;
             }
         }
-
-        if (shortNeighbor.fromNode.length && shortNeighbor.toNode.length) {
-            path.push(shortNeighbor);
-            fromNode = shortNeighbor.toNode;
-        }
-
-        i++;
     }
 
-    return path;
+    return [];
+}
+
+function reconstructPath(goalNode: NodeInfo, closedList: NodeInfo[]) {
+    console.log(goalNode, closedList);
 }

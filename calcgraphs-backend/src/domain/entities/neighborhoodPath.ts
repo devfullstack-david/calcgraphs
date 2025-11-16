@@ -2,16 +2,12 @@ export type NeighborhoodPathProps = {
     start: string;
     end: string;
     distance: number;
-    traffic: number;
-    maxSpeed: number;
 }
 
 export class NeighborhoodPathEntity {
     private start: string;
     private end: string;
     private distance: number;
-    private traffic: number;
-    private maxSpeed: number;
 
     constructor (props: NeighborhoodPathProps) {
         this.validate(props);
@@ -19,8 +15,6 @@ export class NeighborhoodPathEntity {
         this.start = props.start;
         this.end = props.end;
         this.distance = props.distance;
-        this.traffic = props.traffic;
-        this.maxSpeed = props.maxSpeed;
     }
 
     private validate(props: NeighborhoodPathProps) {
@@ -35,14 +29,6 @@ export class NeighborhoodPathEntity {
         if (props.distance < 0) {
             throw new Error('Distance cannot negative');
         }
-
-        if (props.traffic < 0) {
-            throw new Error('Distance cannot negative');
-        }
-
-        if (props.maxSpeed < 0) {
-            throw new Error('Distance cannot negative');
-        }
     }
 
     get getStart(): string {
@@ -55,13 +41,5 @@ export class NeighborhoodPathEntity {
 
     get getDistance(): number {
         return this.distance;
-    }
-
-    get getTraffic(): number {
-        return this.traffic;
-    }
-    
-    get getMaxSpeed(): number {
-        return this.maxSpeed;
     }
 }

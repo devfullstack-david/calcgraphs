@@ -31,7 +31,6 @@ export interface INeighborhoodRepository {
     get: () => Promise<NeighborhoodEntity[]>;
     getPaths: () => Promise<NeighborhoodPathEntity[]>;
     getCoordinate: (nodeName: string) => Promise<Coordinate>;
-    getNeighbors: (fromNode: string, maxSpeed: number) => Promise<Neighbor[]>;
-    getTransport: (transportName: string) => Promise<Transport>;
+    getNeighbors: (fromNode: string) => Promise<Neighbor[]>;
     getPathInformation: (start: string, final: string) => Promise<PathInformation>;
 }

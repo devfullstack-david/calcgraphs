@@ -8,13 +8,12 @@ export class CalculatePathController
             try {
                 const start = req.query.start;
                 const final = req.query.final;
-                const transport = req.query.transport;
                 const algorithm = req.query.algorithm;
+                
                 const useCase = new CalculatePathFactory();
                 const response = await useCase.handle({
                     start: start as string,
                     final: final as string,
-                    transport: transport as string,
                     algorithm: algorithm as string,
                 });
 
