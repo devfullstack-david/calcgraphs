@@ -17,8 +17,6 @@ export class CalculatePathController
                     algorithm: algorithm as string,
                 });
 
-                console.log(response);
-
                 res.status(201).json({ items: response });
             } catch (error) {
                 res.status(400).json({ error, })

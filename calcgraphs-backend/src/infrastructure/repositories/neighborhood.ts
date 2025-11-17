@@ -1,6 +1,6 @@
 import { NeighborhoodEntity } from "../../domain/entities/neighborhood";
 import { NeighborhoodPathEntity } from "../../domain/entities/neighborhoodPath";
-import { Coordinate, INeighborhoodRepository, Neighbor, PathInformation, Transport } from "../../domain/interfaces/neighborhood";
+import { Coordinate, INeighborhoodRepository, Neighbor, Neighborhood, PathInformation, Transport } from "../../domain/interfaces/neighborhood";
 import db from "../connection";
 
 export class NeighborhoodRepository
@@ -53,17 +53,25 @@ export class NeighborhoodRepository
             return neighbors;
         }
 
-        async getPathInformation(start: string, final: string): Promise<PathInformation> {
+        async getPathInformation(start: string, final: string): Promise<PathInformation | undefined> {
             const path = await db("NEIGHBORHOOD_PATH as n").select([
                 'n.FROM_ID as start',
                 'n.TO_ID as end',
                 'n.DISTANCE as distance',
-                'n.TRAFFIC as traffic',
-                'n.MAX_SPEED as maxSpeed'
             ])
             .where('n.FROM_ID', start)
-            .andWhere('n.TO_ID', final);
+            .andWhere('n.TO_ID', final);       
+
+            if (!path.length) return undefined;
 
             return path[0];
+        }
+
+        async getNeighborhoodsData(): Promise<Neighborhood[]> {
+            return await db("dbo.NEIGHBORHOOD").select([
+                'NAME as name',
+                'COORDINATE_ID as coordinateId',
+                'ID as id'
+            ])
         }
     }

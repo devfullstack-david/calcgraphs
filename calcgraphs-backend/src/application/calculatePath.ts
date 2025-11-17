@@ -3,13 +3,26 @@ import { CalculatePathProps } from "../domain/interfaces/calculatePath";
 import { IFactory } from "../domain/interfaces/factory";
 import { CalculatePathUseCase } from "../domain/usecases/calculatePath";
 import { astar } from "../infrastructure/algorithms/astar/astar";
+import { floydWarshall } from "../infrastructure/algorithms/floydWarshall/floydWarshall";
 
 export class CalculatePathFactory
     implements IFactory<CalculatePathProps, ResultPath[]> {
         async handle(params: CalculatePathProps): Promise<ResultPath[]> {
-            const useCase = await new CalculatePathUseCase(
-                astar,
-            );
+            let useCase;
+            if (params.algorithm === 'a') {
+                useCase = await new CalculatePathUseCase(
+                    astar,
+                );
+            } else if (params.algorithm === 'floydWarshall') {
+                useCase = await new CalculatePathUseCase(
+                    floydWarshall,
+                );
+            } 
+            else {
+                useCase = await new CalculatePathUseCase(
+                    astar,
+                );
+            }
 
             return await useCase.execute(params);
         }

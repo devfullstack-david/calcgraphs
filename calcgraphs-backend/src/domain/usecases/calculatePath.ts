@@ -1,6 +1,5 @@
 import { ResultPath } from "../interfaces/astar";
 import { CalculatePathProps } from "../interfaces/calculatePath";
-import { INeighborhoodRepository } from "../interfaces/neighborhood";
 
 export class CalculatePathUseCase {
     constructor (
