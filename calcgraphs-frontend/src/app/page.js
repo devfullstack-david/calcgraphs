@@ -23,13 +23,7 @@ export default function Home() {
   };
 
   const clearData = () => {
-    setAlgorithm(null);
-    setStartNode(null);
-    setEndNode(null);
-
-    if (graphMapRef.current && graphMapRef.current.clearData) {
-      graphMapRef.current.clearData();
-    }
+    window.location.reload();
   };
 
   const updateStartNode = (value) => {

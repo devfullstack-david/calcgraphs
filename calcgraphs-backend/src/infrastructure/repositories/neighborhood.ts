@@ -45,7 +45,7 @@ export class NeighborhoodRepository
                 .select([
                     'N.FROM_ID as fromNode',
                     'N.TO_ID as toNode',
-                    'N.DISTANCE as distanec'
+                    'N.DISTANCE as weight'
                 ])
                 .from('dbo.NEIGHBORHOOD_PATH as N')
                 .where('N.FROM_ID', fromNode);

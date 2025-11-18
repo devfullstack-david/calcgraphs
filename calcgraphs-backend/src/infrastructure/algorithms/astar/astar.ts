@@ -1,4 +1,4 @@
-import { ResultPath } from "../../../domain/interfaces/astar";
+import { Result } from "../../../domain/interfaces/calculatePath";
 import { Coordinate } from "../../../domain/interfaces/neighborhood";
 import { NeighborhoodRepository } from "../../repositories/neighborhood";
 
@@ -17,8 +17,9 @@ function calculateH(a: Coordinate, b: Coordinate): number {
     return Math.sqrt(dx*dx + dy*dy) * 0.02;
 };
 
-export async function astar(start: string, final: string): Promise<ResultPath[]> {
+export async function astar(start: string, final: string): Promise<Result[]> {
     const repository = new NeighborhoodRepository();
+    let result: Result[] = [];
 
     const startCoordinateInformation = await repository.getCoordinate(start);
     const finalCoordinateInformation = await repository.getCoordinate(final);
@@ -44,7 +45,7 @@ export async function astar(start: string, final: string): Promise<ResultPath[]>
         }
 
         if (current.name === final) {
-            reconstructPath(current, closedList);
+            result = reconstructPath(current, closedList);
             break;
         }
 
@@ -82,9 +83,36 @@ export async function astar(start: string, final: string): Promise<ResultPath[]>
         }
     }
 
-    return [];
+    return result;
 }
 
-function reconstructPath(goalNode: NodeInfo, closedList: NodeInfo[]) {
-    console.log(goalNode, closedList);
+function reconstructPath(goalNode: NodeInfo, closedList: NodeInfo[]): Result[] {
+    const result: Result[] = new Array(closedList.length);
+    let beforeNode = goalNode.beforeNode;
+    
+    for (let i = closedList.length - 1; i >= 0; i--) {
+        const node = closedList.find((item) => item.name === beforeNode);
+
+        if (!node) throw new Error('Ocorreu um erro na construção do caminho no A*');
+
+        if (!node.beforeNode) break;
+
+        result[i] = {
+            fromNode: node.beforeNode!,
+            toNode: node.name,
+            weight: node.f,
+            logInformation: `Com o peso de ${node.f} o melhor caminho foi de ${node.beforeNode} até ${node.name}`
+        };
+
+        beforeNode = node.beforeNode;
+    };
+
+    result.push({
+        fromNode: goalNode.beforeNode!,
+        toNode: goalNode.name,
+        weight: goalNode.f,
+        logInformation: `Com o peso de ${goalNode.f} o melhor caminho foi de ${goalNode.beforeNode} até ${goalNode.name}`
+    });
+    
+    return result.filter((item) => item.fromNode);
 }

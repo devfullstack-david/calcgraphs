@@ -1,3 +1,4 @@
+import { Result } from "../../../domain/interfaces/calculatePath";
 import { Neighborhood } from "../../../domain/interfaces/neighborhood";
 import { NeighborhoodRepository } from "../../repositories/neighborhood";
 
@@ -35,8 +36,9 @@ async function initializeMatrix(data: Neighborhood[]): Promise<number[][]> {
     return matrix;
 }
 
-export async function floydWarshall(start: string, final: string): Promise<void> {
+export async function floydWarshall(start: string, final: string): Promise<Result[]> {
     const neighborhoodsData = await repo.getNeighborhoodsData();
+    const result: Result[] = []
     const dataQtd = neighborhoodsData.length;
 
     const matrix = await initializeMatrix(neighborhoodsData);
@@ -67,14 +69,15 @@ export async function floydWarshall(start: string, final: string): Promise<void>
         }
     }
 
-    const path = reconstructPath(start, final, nextMatrix, neighborhoodsData);
+    const path = await reconstructPath(start, final, nextMatrix, neighborhoodsData);
 
-    console.log("Caminho encontrado: ", path);
+    return path || [];
 }
 
-function reconstructPath(start: string, final: string, next: any[][], data: Neighborhood[]): String[] | null {
+async function reconstructPath(start: string, final: string, next: any[][], data: Neighborhood[]): Promise<Result[] | null> {
     const startId = data.find((item) => item.name === start)?.id;
     const finalId = data.find((item) => item.name === final)?.id;
+    const result: Result[] = [];
 
     if (!startId || !finalId) throw new Error("Um dos bairros informados não existem");
     if (next[startId][finalId] === null) return null;
@@ -90,9 +93,28 @@ function reconstructPath(start: string, final: string, next: any[][], data: Neig
         pathIds.push(current);
     }
 
-    return pathIds.map(id => {
-        const item = data.find(d => d.id === id);
-        if (!item) throw new Error(`ID ${id} não encontrado na lista de bairros`);
-        return item.name;
-    });
+    console.log(pathIds);
+
+    let i = 0;
+    
+    while (i <= pathIds.length - 1) {
+        const fromNodeInformation = data.find(d => d.id === pathIds[i])!;
+        const toNodeInformation = data.find(d => d.id === pathIds[i + 1])!;
+        const pathInformation = await repo.getPathInformation(fromNodeInformation.name, toNodeInformation.name);
+        
+        if (!pathInformation) throw new Error('Houve um problema ao reconstruir o caminho pelo algoritmo de floyd-warshall');
+
+        result.push({
+            fromNode: pathInformation.start,
+            toNode: pathInformation.end,
+            weight: pathInformation.distance,
+            logInformation: `Com o peso de ${pathInformation.distance}Km o melhor caminho foi de ${pathInformation.start} até ${pathInformation.end}`
+        });
+
+        if (pathInformation.end === final) break;
+
+        i++;
+    }
+
+    return result;
 }

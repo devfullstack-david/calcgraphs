@@ -1,13 +1,12 @@
-import { ResultPath } from "../domain/interfaces/astar";
-import { CalculatePathProps } from "../domain/interfaces/calculatePath";
+import { CalculatePathProps, Result } from "../domain/interfaces/calculatePath";
 import { IFactory } from "../domain/interfaces/factory";
 import { CalculatePathUseCase } from "../domain/usecases/calculatePath";
 import { astar } from "../infrastructure/algorithms/astar/astar";
 import { floydWarshall } from "../infrastructure/algorithms/floydWarshall/floydWarshall";
 
 export class CalculatePathFactory
-    implements IFactory<CalculatePathProps, ResultPath[]> {
-        async handle(params: CalculatePathProps): Promise<ResultPath[]> {
+    implements IFactory<CalculatePathProps, Result[]> {
+        async handle(params: CalculatePathProps): Promise<Result[]> {
             let useCase;
             if (params.algorithm === 'a') {
                 useCase = await new CalculatePathUseCase(
