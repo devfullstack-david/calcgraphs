@@ -38,7 +38,6 @@ async function initializeMatrix(data: Neighborhood[]): Promise<number[][]> {
 
 export async function floydWarshall(start: string, final: string): Promise<Result[]> {
     const neighborhoodsData = await repo.getNeighborhoodsData();
-    const result: Result[] = []
     const dataQtd = neighborhoodsData.length;
 
     const matrix = await initializeMatrix(neighborhoodsData);
@@ -92,8 +91,6 @@ async function reconstructPath(start: string, final: string, next: any[][], data
 
         pathIds.push(current);
     }
-
-    console.log(pathIds);
 
     let i = 0;
     
