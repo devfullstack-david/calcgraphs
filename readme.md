@@ -1,18 +1,20 @@
-# 📍 Pathfinding Graph Map
+# 📍 CalcGraphs
 
-Aplicação para visualização de grafos e cálculo de rotas ótimas utilizando algoritmos de pathfinding.  
+Aplicação para visualização de grafos e cálculo de rotas ótimas utilizando algoritmos de busca de caminho mínimo em grafos.  
 Desenvolvida em **JavaScript/TypeScript** com backend integrado a **SQL Server**.
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
-- **Frontend:** JavaScript / TypeScript  
-- **Backend:** Node.js (TypeScript)  
+- **Frontend:** JavaScript  
+- **Backend:** Node.js (TypeScript) / Express (API) / Knex (DB)  
 - **Banco de Dados:** SQL Server  
 - **Algoritmos Implementados:**
   - Dijkstra  
   - A* (A-Star)  
-  - Floyd–Warshall  
+  - Floyd–Warshall 
+  - BFS
+  - Bellman-Ford
 
 ---
 
@@ -31,5 +33,3 @@ Inclui suporte a:
 - Renderização visual do caminho encontrado
 
 ---
-
-## 📁 Estrutura do Projeto
