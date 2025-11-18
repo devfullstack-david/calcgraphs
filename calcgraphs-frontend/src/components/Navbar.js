@@ -5,14 +5,13 @@ const Navbar = () => {
   return (
     <div className="navbar-container">
       <div className="navbar-logo">
-        CalcGraphs
+        <Link href='/' className="link-customized">
+          CalcGraphs
+        </Link>
       </div>
       <div className="navbar-menu">
         <ul>
-          <li><Link href='/'>Principal</Link></li>
-          <li><Link href='/about-us'>Sobre nós</Link></li>
-          <li><Link href='/graphs'>Grafos</Link></li>
-          <li><Link href='/algorithms'>Algoritmos</Link></li>
+          <li><Link href='/calcgraph'>Aplicação</Link></li>
         </ul>
       </div>
     </div>

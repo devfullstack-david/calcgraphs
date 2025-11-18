@@ -9,7 +9,7 @@
 
 .navbar-logo {
     font-size: 26px;
-    margin-left: 10px;
+    margin-left: 20px;
 }
 
 .navbar-menu {
@@ -25,8 +25,15 @@
     align-items: center;
 }
 
+.link-customized {
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+}
+
 .navbar-menu ul li {
     cursor: pointer;
+    margin-right: 20px;
 }
 
 .navbar-menu ul li a {

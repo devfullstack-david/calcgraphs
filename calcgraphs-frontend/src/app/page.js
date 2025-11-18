@@ -1,104 +1,49 @@
 "use client"
 
-import "@/styles/pages.css"
-import Select from '@/components/Select'
-import { useRef, useState } from "react";
-import GraphMap from "@/components/GraphMap";
-import { generatePath } from "@/services/neighborhood";
+import "@/styles/home.css"
 
 export default function Home() {
-  const [algorithm, setAlgorithm] = useState(null);
-  const [startNode, setStartNode] = useState(null);
-  const [path, setPath] = useState(null);
-  const graphMapRef = useRef();
-  const [endNode, setEndNode] = useState(null);
-
-  const handleGenerate = async () => {
-    try {
-      const pathResponse = await generatePath(startNode, endNode, algorithm);
-      setPath(pathResponse);
-    } catch (error) {
-      alert('Ocorreu um erro ao gerar o caminho');
-    }
-  };
-
-  const clearData = () => {
-    window.location.reload();
-  };
-
-  const updateStartNode = (value) => {
-    setStartNode(value);
-  };
-
-  const updateEndNote = (value) => {
-    setEndNode(value);
-  };
-
-  const algorithms = [
-    {
-      value: 'dijkstra',
-      label: 'Dijkstra'
-    },
-    {
-      value: 'a',
-      label: 'A*'
-    },
-    {
-      value: 'bellmanFord',
-      label: 'Bellman-Ford'
-    },
-    {
-      value: 'bfs',
-      label: 'BFS'
-    },
-    {
-      value: 'floydWarshall',
-      label: 'Floyd-Warshall'
-    },
-  ];
-
   return (
-    <div className="main-page__container">
-      <h2>Selecione as opções abaixo</h2>
-      
-      <center>
-        <p>Abaixo você pode selecionar
-          as opções como o algoritmo a ser
-          utilizado e o ponto inicial/final
-          <br />
-          Selecione no mapa de grafo
-          o ponto inicial e o ponto final
-          para executar o cálculo da rota
-        </p>
-      </center>
+    <div>
+      <header>
+        <div className="header-container">
+          <h1 className="header-container__title">CalcGraphs</h1>
+          <p className="header-container__description">Explore rotas inteligentes com o poder da Teoria dos Grafos</p>
+        </div>
+        <div className="header-container__icons">
+          <div>📍</div>
+          <div>🗺️</div>
+          <div>📡</div>
+          <div>🔍</div>
+          <div>🧭</div>
+        </div>
+      </header>
+        <section id="sobre">
+          <h2>Sobre Nós</h2>
+          <h3>Introdução</h3>
+          <p>O CalcGraphs é uma aplicação fundamentada na Teoria dos Grafos. Seu objetivo é demonstrar como essa teoria é aplicada em sistemas GPS, mostrando como encontrar o caminho mais curto entre um ponto de saída e um ponto de chegada. A lógica da aplicação é simples: o usuário seleciona o algoritmo desejado, o meio de transporte, o ponto inicial e o final, e então inicia o cálculo para visualizar a rota no mapa.</p>
 
-      <button  
-        className='clear-data__button' 
-        onClick={clearData}
-      >
-        Limpar seleção
-      </button>
-      
-      <div className="main-page__select-container">
-        <Select items={algorithms} placeholder="Selecione o algoritmo desejado" onSelectChange={setAlgorithm} />
-      </div>
 
-      <GraphMap 
-        updateStartNode={updateStartNode} 
-        updateEndNote={updateEndNote} 
-        algorithm={algorithm}
-        path={path}
-        ref={graphMapRef}
-      />
+          <h3>Nossa Missão</h3>
+          <p>A aplicação foi criada especialmente para estudantes de computação e áreas relacionadas. Sabemos que a Teoria dos Grafos pode gerar dúvidas sobre sua aplicação prática, por isso decidimos demonstrar seu papel essencial em sistemas GPS — uma das áreas mais intuitivas para compreender como grafos resolvem problemas reais.</p>
 
-      <br />
 
-      <button 
-        className={'main-page__button'} 
-        onClick={handleGenerate}
-      >
-        Gerar a rota
-      </button>
+          <h3>Tecnologias</h3>
+          <p>No frontend utilizamos JavaScript com NextJS (baseado em ReactJS). No backend, Typescript com Express e Knex para estruturar nossa API integrada ao frontend. Para o banco de dados, utilizamos MySQL, armazenando informações de localização, algoritmos e meios de transporte. Como repositório e versionamento, usamos Git e GitHub.</p>
+        </section>
+
+
+        <section id="grafos">
+          <h2>Grafos</h2>
+          <p>A Teoria dos Grafos é uma área da Matemática Discreta que modela relações entre elementos por meio de vértices e arestas. Essa estrutura permite representar sistemas complexos de forma simples, sendo essencial para diversas áreas da computação.</p>
+          <p>Na computação, muitos algoritmos e estruturas de dados se baseiam em grafos, possibilitando resolver problemas de conectividade, caminhos e organização de informação. Eles são amplamente usados em redes de computadores, redes sociais, inteligência artificial e sistemas de recomendação.</p>
+          <p>Uma das aplicações mais visíveis dessa teoria está nos sistemas de navegação, como GPS e aplicativos de mapas. Neles, ruas e cruzamentos são modelados como grafos, e algoritmos como Dijkstra e A* calculam rotas eficientes considerando distância, tempo ou custo. Essa lógica também é a base do funcionamento do CalcGraphs.</p>
+        </section>
+
+
+        <footer className="footer">
+          <p>© 2025 CalcGraphs - Todos os direitos reservados</p>
+        </footer>
     </div>
   );
 }
