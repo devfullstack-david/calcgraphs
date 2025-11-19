@@ -2,6 +2,7 @@ import { CalculatePathProps, Result } from "../domain/interfaces/calculatePath";
 import { IFactory } from "../domain/interfaces/factory";
 import { CalculatePathUseCase } from "../domain/usecases/calculatePath";
 import { astar } from "../infrastructure/algorithms/astar/astar";
+import { bellmanFord } from "../infrastructure/algorithms/bellmanFord/bellmanFord";
 import { floydWarshall } from "../infrastructure/algorithms/floydWarshall/floydWarshall";
 
 export class CalculatePathFactory
@@ -16,8 +17,11 @@ export class CalculatePathFactory
                 useCase = await new CalculatePathUseCase(
                     floydWarshall,
                 );
-            } 
-            else {
+            } else if (params.algorithm === 'bellmanFord') {
+                useCase = await new CalculatePathUseCase(
+                    bellmanFord,
+                );
+            } else {
                 useCase = await new CalculatePathUseCase(
                     astar,
                 );

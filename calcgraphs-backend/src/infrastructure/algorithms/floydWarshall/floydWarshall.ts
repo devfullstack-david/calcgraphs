@@ -10,23 +10,23 @@ async function initializeMatrix(data: Neighborhood[]): Promise<number[][]> {
         Array(dataQtd + 1).fill(Infinity)
     );
 
+    const pathsInformations = await repo.getPathsInformations();
+
     for (let id = 1; id <= dataQtd; id++) {
         matrix[id][id] = 0;
     }
 
     for (let i = 1; i <= dataQtd; i++) {
-        matrix[i] = [];
-
         for (let j = 1; j <= dataQtd; j++) {
             if (i == j) {
                 matrix[i][j] = 0;
                 continue;
             };
 
-            const pathInformation = await repo.getPathInformation(
-                data.find(item => item.id === i)!.name, 
-                data.find(item => item.id === j)!.name
-            );
+            const startName = data.find(item => item.id === i)!.name;
+            const finalName = data.find(item => item.id === j)!.name;
+
+            const pathInformation = pathsInformations.find((p) => p.start === startName && p.end === finalName);
 
             if (pathInformation) matrix[i][j] = pathInformation.distance;
             else if (!pathInformation) matrix[i][j] = Infinity;

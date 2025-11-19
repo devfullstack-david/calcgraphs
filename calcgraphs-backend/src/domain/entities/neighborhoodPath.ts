@@ -5,9 +5,9 @@ export type NeighborhoodPathProps = {
 }
 
 export class NeighborhoodPathEntity {
-    private start: string;
-    private end: string;
-    private distance: number;
+    public start: string;
+    public end: string;
+    public distance: number;
 
     constructor (props: NeighborhoodPathProps) {
         this.validate(props);

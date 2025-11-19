@@ -74,4 +74,14 @@ export class NeighborhoodRepository
                 'ID as id'
             ])
         }
+
+        async getPathsInformations(): Promise<PathInformation[]> {
+            const paths = await db("NEIGHBORHOOD_PATH as n").select([
+                'n.FROM_ID as start',
+                'n.TO_ID as end',
+                'n.DISTANCE as distance',
+            ]);
+
+            return paths;
+        }
     }

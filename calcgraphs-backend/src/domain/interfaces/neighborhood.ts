@@ -38,4 +38,5 @@ export interface INeighborhoodRepository {
     getNeighbors: (fromNode: string) => Promise<Neighbor[]>;
     getPathInformation: (start: string, final: string) => Promise<PathInformation | undefined>;
     getNeighborhoodsData: () => Promise<Neighborhood[]>;
+    getPathsInformations: () => Promise<PathInformation[]>;
 }
