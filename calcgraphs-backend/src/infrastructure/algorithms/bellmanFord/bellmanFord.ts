@@ -28,13 +28,13 @@ export async function bellmanFord(start: string, final: string): Promise<Result[
         let updated = false;
 
         for (const p of paths) {
-            const from = nameToId.get(p.start)!;
-            const to = nameToId.get(p.end)!;
+            const fromNodeId = nameToId.get(p.start)!;
+            const toNodeId = nameToId.get(p.end)!;
             const weight = p.distance;
 
-            if (dist[from] !== Infinity && dist[from] + weight < dist[to]) {
-                dist[to] = dist[from] + weight;
-                parent[to] = from;
+            if (dist[fromNodeId] !== Infinity && dist[fromNodeId] + weight < dist[toNodeId]) {
+                dist[toNodeId] = dist[fromNodeId] + weight;
+                parent[toNodeId] = fromNodeId;
                 updated = true;
             }
         }
@@ -43,11 +43,11 @@ export async function bellmanFord(start: string, final: string): Promise<Result[
     }
 
     for (const p of paths) {
-        const from = nameToId.get(p.start)!;
-        const to = nameToId.get(p.end)!;
+        const fromNodeId = nameToId.get(p.start)!;
+        const toNodeId = nameToId.get(p.end)!;
         const weight = p.distance;
 
-        if (dist[from] !== Infinity && dist[from] + weight < dist[to]) {
+        if (dist[fromNodeId] !== Infinity && dist[fromNodeId] + weight < dist[toNodeId]) {
             throw new Error("Grafo contém ciclo de peso negativo.");
         }
     }
