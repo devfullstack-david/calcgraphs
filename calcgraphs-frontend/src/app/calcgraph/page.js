@@ -12,13 +12,20 @@ export default function CalcGraph() {
   const [path, setPath] = useState(null);
   const graphMapRef = useRef();
   const [endNode, setEndNode] = useState(null);
+  const [timeToExecute, setTimeToExecute] = useState('0 ms');
 
   const handleGenerate = async () => {
+    const inicio = performance.now();
+
     try {
       const pathResponse = await generatePath(startNode, endNode, algorithm);
       setPath(pathResponse);
     } catch (error) {
       alert('Ocorreu um erro ao gerar o caminho');
+    } finally {
+      const fim = performance.now();
+      const time = (fim - inicio).toFixed(2)
+      setTimeToExecute(`${time} ms`);
     }
   };
 
@@ -81,6 +88,10 @@ export default function CalcGraph() {
       
       <div className="main-page__select-container">
         <Select items={algorithms} placeholder="Selecione o algoritmo desejado" onSelectChange={setAlgorithm} />
+      </div>
+
+      <div>
+        Tempo para calcular: { timeToExecute }
       </div>
 
       <GraphMap 
