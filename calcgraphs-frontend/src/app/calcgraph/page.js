@@ -15,6 +15,11 @@ export default function CalcGraph() {
   const [timeToExecute, setTimeToExecute] = useState('0 ms');
 
   const handleGenerate = async () => {
+    if (!startNode || !endNode || !algorithm) {
+      alert('Selecione todos os dados necessários')
+      return;
+    }
+
     const inicio = performance.now();
 
     try {
